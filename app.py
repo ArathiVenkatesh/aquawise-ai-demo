@@ -19,9 +19,35 @@ st.markdown("""
     /* Main background gradient */
     .stApp {
         background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0f172a 100%);
+        color: #ffffff !important;
     }
     
-    /* Header styling */
+    /* FORCE ALL TEXT TO WHITE */
+    body, p, span, div, label, li, td, th, h1, h2, h3, h4, h5, h6, a {
+        color: #ffffff !important;
+    }
+    
+    /* Streamlit specific elements */
+    .stMarkdown, .stMarkdown *, [data-testid="stMarkdownContainer"], [data-testid="stMarkdownContainer"] * {
+        color: #ffffff !important;
+    }
+    
+    .stText, .stText * {
+        color: #ffffff !important;
+    }
+    
+    /* Headers */
+    h1, h2, h3, h4, h5, h6 {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+    }
+    
+    /* Paragraphs */
+    p {
+        color: #ffffff !important;
+    }
+    
+    /* Main header styling */
     .main-header {
         background: linear-gradient(90deg, #06b6d4 0%, #3b82f6 100%);
         padding: 2rem;
@@ -29,6 +55,10 @@ st.markdown("""
         text-align: center;
         margin-bottom: 2rem;
         box-shadow: 0 8px 32px rgba(6, 182, 212, 0.3);
+    }
+    
+    .main-header * {
+        color: #ffffff !important;
     }
     
     /* Agent cards */
@@ -40,6 +70,10 @@ st.markdown("""
         padding: 1.5rem;
         margin: 1rem 0;
         transition: all 0.3s ease;
+    }
+    
+    .agent-card * {
+        color: #ffffff !important;
     }
     
     .agent-card:hover {
@@ -55,6 +89,10 @@ st.markdown("""
         border-radius: 10px;
         padding: 1.5rem;
         text-align: center;
+    }
+    
+    .metric-card * {
+        color: #ffffff !important;
     }
     
     /* Status badges */
@@ -123,15 +161,12 @@ st.markdown("""
 # ----------------- HEADER -----------------
 st.markdown("""
 <div class="main-header">
-    <h1 style="font-size: 3.5rem; margin: 0; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+    <h1 style="font-size: 3.5rem; margin: 0; color: #ffffff !important; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); font-weight: 700;">
         💧 AquaWise AI
     </h1>
-    <h3 style="color: rgba(255,255,255,0.9); margin-top: 0.5rem;">
+    <h3 style="color: #ffffff !important; margin-top: 0.5rem; font-weight: 600;">
         Multi-Agent Leak Detection & Water Management System
     </h3>
-    <p style="color: rgba(255,255,255,0.8); margin-top: 1rem; font-size: 1.1rem;">
-        🌍 SDG 6: Clean Water & Sanitation | Advanced Agentic AI Architecture
-    </p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -154,12 +189,12 @@ with col2:
     st.markdown('<h4 style="color: #10b981;">📅 Mid Week</h4>', unsafe_allow_html=True)
     wed = st.number_input("🟢 Wednesday (Liters)", min_value=0, max_value=10000, value=305, step=10)
     thu = st.number_input("🟡 Thursday (Liters)", min_value=0, max_value=10000, value=680, step=10)
+    fri = st.number_input("🔴 Friday (Liters)", min_value=0, max_value=10000, value=720, step=10)
 
 with col3:
-    st.markdown('<h4 style="color: #f59e0b;">📅 Late Week</h4>', unsafe_allow_html=True)
-    fri = st.number_input("🔴 Friday (Liters)", min_value=0, max_value=10000, value=720, step=10)
-    st.markdown("")
-    st.markdown("")
+    st.markdown('<h4 style="color: #f59e0b;">📅 Weekend</h4>', unsafe_allow_html=True)
+    sat = st.number_input("🟣 Saturday (Liters)", min_value=0, max_value=10000, value=350, step=10)
+    sun = st.number_input("🟠 Sunday (Liters)", min_value=0, max_value=10000, value=330, step=10)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
@@ -175,14 +210,17 @@ if analyze_button:
     
     # Calculate metrics
     data = {
-        "Day": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-        "Usage": [mon, tue, wed, thu, fri]
+        "Day": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        "Usage": [mon, tue, wed, thu, fri, sat, sun]
     }
     df = pd.DataFrame(data)
     
     baseline_avg = (mon + tue + wed) / 3
-    spike_detected = thu > baseline_avg * sensitivity or fri > baseline_avg * sensitivity
-    max_usage = max(thu, fri)
+    spike_detected = (thu > baseline_avg * sensitivity or 
+                      fri > baseline_avg * sensitivity or 
+                      sat > baseline_avg * sensitivity or 
+                      sun > baseline_avg * sensitivity)
+    max_usage = max(thu, fri, sat, sun)
     increase_pct = ((max_usage - baseline_avg) / baseline_avg) * 100 if baseline_avg > 0 else 0
     
     # Determine risk
@@ -272,7 +310,9 @@ if analyze_button:
         # Add actual usage
         colors = ['#3b82f6', '#3b82f6', '#10b981', 
                   '#ef4444' if thu > baseline_avg * sensitivity else '#f59e0b',
-                  '#ef4444' if fri > baseline_avg * sensitivity else '#f59e0b']
+                  '#ef4444' if fri > baseline_avg * sensitivity else '#f59e0b',
+                  '#ef4444' if sat > baseline_avg * sensitivity else '#8b5cf6',
+                  '#ef4444' if sun > baseline_avg * sensitivity else '#8b5cf6']
         
         fig.add_trace(go.Bar(
             x=df['Day'],
@@ -360,32 +400,27 @@ if analyze_button:
     ]
     
     # Create agent cards with progressive reveal
-    for i, agent in enumerate(agents):
-        with st.container():
-            if i < 3:
-                col = st.columns([1, 1, 1])[i]
-            else:
-                col = st.columns([1, 1, 1])[i - 3]
-            
-            with col:
-                time.sleep(0.1)  # Small delay for visual effect
-                
-                st.markdown(f"""
-                <div class="agent-card">
-                    <h3 style="color: #06b6d4; margin: 0;">
-                        {agent['icon']} Agent {agent['id']}
-                    </h3>
-                    <h4 style="color: white; margin: 0.5rem 0;">
-                        {agent['name']}
-                    </h4>
-                    <p style="color: #10b981; font-weight: bold; margin: 0;">
-                        {agent['status']}
-                    </p>
-                </div>
-                """, unsafe_allow_html=True)
-        
-        if i == 2:
-            st.markdown("")  # Add space between rows
+    for i in range(0, 6, 3):
+        cols = st.columns(3)
+        for j in range(3):
+            if i + j < len(agents):
+                agent = agents[i + j]
+                with cols[j]:
+                    time.sleep(0.1)  # Small delay for visual effect
+                    
+                    st.markdown(f"""
+                    <div class="agent-card">
+                        <h3 style="color: #06b6d4; margin: 0;">
+                            {agent['icon']} Agent {agent['id']}
+                        </h3>
+                        <h4 style="color: white; margin: 0.5rem 0;">
+                            {agent['name']}
+                        </h4>
+                        <p style="color: #10b981; font-weight: bold; margin: 0;">
+                            {agent['status']}
+                        </p>
+                    </div>
+                    """, unsafe_allow_html=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
     
@@ -404,8 +439,8 @@ if analyze_button:
     with tab1:
         st.markdown("#### Data Validation & Processing")
         st.dataframe(df.style.background_gradient(cmap='Blues'), use_container_width=True)
-        st.success("✅ All 5 data points validated successfully")
-        st.info(f"📊 Total weekly consumption: **{sum([mon, tue, wed, thu, fri])} liters**")
+        st.success("✅ All 7 data points validated successfully")
+        st.info(f"📊 Total weekly consumption: **{sum([mon, tue, wed, thu, fri, sat, sun])} liters**")
     
     with tab2:
         st.markdown("#### Statistical Pattern Recognition")
@@ -416,7 +451,7 @@ if analyze_button:
         """)
         
         if spike_detected:
-            st.warning(f"🔔 **Anomaly Detected:** Usage spike of {increase_pct:.1f}% above baseline on {'Thursday' if thu > baseline_avg * sensitivity else 'Friday'}")
+            st.warning(f"🔔 **Anomaly Detected:** Usage spike of {increase_pct:.1f}% above baseline")
         else:
             st.success("✅ **Pattern Status:** Water usage within expected parameters")
     
@@ -429,6 +464,10 @@ if analyze_button:
             risk_factors.append(f"Thursday spike: +{((thu - baseline_avg) / baseline_avg * 100):.1f}%")
         if fri > baseline_avg * sensitivity:
             risk_factors.append(f"Friday spike: +{((fri - baseline_avg) / baseline_avg * 100):.1f}%")
+        if sat > baseline_avg * sensitivity:
+            risk_factors.append(f"Saturday spike: +{((sat - baseline_avg) / baseline_avg * 100):.1f}%")
+        if sun > baseline_avg * sensitivity:
+            risk_factors.append(f"Sunday spike: +{((sun - baseline_avg) / baseline_avg * 100):.1f}%")
         
         if risk_factors:
             st.error(f"**🚨 Risk Level:** {risk_level}")
@@ -532,41 +571,21 @@ if analyze_button:
     st.markdown("---")
     st.markdown("### ✅ Executive Summary")
     
-    summary_col1, summary_col2 = st.columns([2, 1])
-    
-    with summary_col1:
-        st.markdown(f"""
-        <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(6, 182, 212, 0.2)); 
-                    padding: 2rem; border-radius: 15px; border: 2px solid rgba(59, 130, 246, 0.4);">
-            <h3 style="color: #06b6d4; margin-top: 0;">🎯 System Assessment Complete</h3>
-            <table style="width: 100%; color: white;">
-                <tr><td><b>Baseline Usage:</b></td><td>{baseline_avg:.2f} L/day</td></tr>
-                <tr><td><b>Peak Usage:</b></td><td>{max_usage:.0f} L/day</td></tr>
-                <tr><td><b>Usage Increase:</b></td><td>{increase_pct:.1f}%</td></tr>
-                <tr><td><b>Risk Classification:</b></td><td><span class="{risk_class}">{risk_level}</span></td></tr>
-                <tr><td><b>Leak Probability:</b></td><td>{probability:.1f}%</td></tr>
-                <tr><td><b>Recommendation:</b></td><td>{'Immediate inspection required' if spike_detected else 'Continue monitoring'}</td></tr>
-            </table>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with summary_col2:
-        st.markdown(f"""
-        <div style="background: rgba(16, 185, 129, 0.1); padding: 2rem; border-radius: 15px; 
-                    border: 2px solid rgba(16, 185, 129, 0.4); text-align: center;">
-            <h3 style="color: #10b981; margin-top: 0;">🌍 SDG Impact</h3>
-            <p style="color: white; font-size: 1.1rem;">
-                This analysis supports<br><b>SDG Goal 6</b><br>
-                <i>Clean Water & Sanitation</i>
-            </p>
-            <p style="color: #94a3b8; margin-top: 1rem;">
-                Potential water saved:<br>
-                <b style="color: white; font-size: 1.5rem;">
-                    {max(0, (max_usage - baseline_avg) * 30):.0f}L/month
-                </b>
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(6, 182, 212, 0.2)); 
+                padding: 2rem; border-radius: 15px; border: 2px solid rgba(59, 130, 246, 0.4);">
+        <h3 style="color: #06b6d4; margin-top: 0;">🎯 System Assessment Complete</h3>
+        <table style="width: 100%; color: white;">
+            <tr><td><b>Baseline Usage:</b></td><td>{baseline_avg:.2f} L/day</td></tr>
+            <tr><td><b>Peak Usage:</b></td><td>{max_usage:.0f} L/day</td></tr>
+            <tr><td><b>Usage Increase:</b></td><td>{increase_pct:.1f}%</td></tr>
+            <tr><td><b>Risk Classification:</b></td><td><span class="{risk_class}">{risk_level}</span></td></tr>
+            <tr><td><b>Leak Probability:</b></td><td>{probability:.1f}%</td></tr>
+            <tr><td><b>Recommendation:</b></td><td>{'Immediate inspection required' if spike_detected else 'Continue monitoring'}</td></tr>
+            <tr><td><b>Potential Water Saved:</b></td><td>{max(0, (max_usage - baseline_avg) * 30):.0f}L/month</td></tr>
+        </table>
+    </div>
+    """, unsafe_allow_html=True)
     
     st.balloons()
 
