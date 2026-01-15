@@ -570,18 +570,4 @@ if analyze_button:
     
     st.balloons()
 
-# ----------------- FOOTER -----------------
-st.markdown("<br><br>", unsafe_allow_html=True)
-st.markdown("---")
-st.markdown("""
-<div style="text-align: center; color: #94a3b8; padding: 2rem;">
-    <p style="font-size: 0.9rem;">
-        🤖 <b>Powered by Multi-Agent AI Architecture</b> | 
-        Designed by Agentic AI Workflow Lead | 
-        Built with Streamlit & Plotly
-    </p>
-    <p style="font-size: 0.8rem; margin-top: 0.5rem;">
-        System Version 1.0 | Last Updated: {}
-    </p>
-</div>
-""".format(datetime.now().strftime("%B %d, %Y")), unsafe_allow_html=True)
+# End of app
