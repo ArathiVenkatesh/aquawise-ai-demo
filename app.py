@@ -136,6 +136,9 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ----------------- INPUT SECTION -----------------
+# Set fixed sensitivity threshold
+sensitivity = 1.5
+
 st.markdown("### 📥 Water Usage Data Input")
 st.markdown('<p style="color: #94a3b8; font-size: 1rem;">Enter daily water consumption for the week (in liters)</p>', unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
