@@ -137,36 +137,42 @@ st.markdown("""
 
 # ----------------- SIDEBAR -----------------
 with st.sidebar:
-    st.markdown("### 🤖 System Architecture")
     st.markdown("""
-    <div style="background: rgba(59, 130, 246, 0.1); padding: 1rem; border-radius: 10px; border-left: 4px solid #3b82f6;">
-        <b>Multi-Agent Workflow:</b><br><br>
-        <b>1️⃣ Input Agent</b> → Data validation<br>
-        <b>2️⃣ Analysis Agent</b> → Pattern detection<br>
-        <b>3️⃣ Risk Agent</b> → Probability calculation<br>
-        <b>4️⃣ Decision Agent</b> → Classification<br>
-        <b>5️⃣ Advisory Agent</b> → Recommendations<br>
-        <b>6️⃣ Guardrail Agent</b> → Ethical oversight
+    <div style="text-align: center; padding: 1rem;">
+        <h2 style="color: #06b6d4; margin: 0;">⚙️</h2>
+        <h3 style="color: white; margin: 0.5rem 0;">System Settings</h3>
     </div>
     """, unsafe_allow_html=True)
     
     st.markdown("---")
-    st.markdown("### 📊 System Capabilities")
+    
+    st.markdown('<p style="color: white; font-weight: bold; font-size: 1.1rem;">🎚️ Detection Sensitivity</p>', unsafe_allow_html=True)
+    sensitivity = st.slider("Anomaly Threshold Multiplier", 1.2, 2.0, 1.5, 0.1, label_visibility="collapsed")
+    st.markdown(f'<p style="color: #06b6d4; text-align: center;">Threshold: <b>{sensitivity}x</b> baseline</p>', unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
     st.markdown("""
-    - **Real-time monitoring**
-    - **Anomaly detection**
-    - **Predictive analytics**
-    - **Explainable AI**
-    - **Responsible AI guardrails**
-    """)
+    <div style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(59, 130, 246, 0.2)); 
+                padding: 1.5rem; border-radius: 10px; border: 2px solid rgba(6, 182, 212, 0.4);">
+        <h4 style="color: #06b6d4; margin-top: 0; text-align: center;">💡 Your Role</h4>
+        <p style="color: white; text-align: center; font-weight: bold; margin: 0;">
+            Agentic AI Workflow Lead
+        </p>
+        <p style="color: #94a3b8; text-align: center; font-size: 0.9rem; margin-top: 0.5rem;">
+            System architecture, agent design, workflow logic, and responsible AI implementation
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
     
     st.markdown("---")
-    st.markdown("### ⚙️ Configuration")
-    sensitivity = st.slider("Detection Sensitivity", 1.2, 2.0, 1.5, 0.1)
-    st.caption(f"Threshold: {sensitivity}x baseline")
     
-    st.markdown("---")
-    st.info("💡 **Your Role:** Agentic AI Workflow Lead\n\nSystem architecture, agent design, workflow logic, and responsible AI implementation")
+    st.markdown("""
+    <div style="background: rgba(16, 185, 129, 0.1); padding: 1rem; border-radius: 8px; border-left: 4px solid #10b981;">
+        <p style="color: #10b981; font-weight: bold; margin: 0;">✅ System Status</p>
+        <p style="color: white; font-size: 0.9rem; margin-top: 0.5rem;">All agents operational</p>
+    </div>
+    """, unsafe_allow_html=True)
 
 # ----------------- INPUT SECTION -----------------
 st.markdown("### 📥 Water Usage Data Input")
