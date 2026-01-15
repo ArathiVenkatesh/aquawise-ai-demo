@@ -10,7 +10,7 @@ st.set_page_config(
     page_title="AquaWise AI - Agentic System",
     page_icon="💧",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
 # ----------------- CUSTOM CSS -----------------
@@ -135,62 +135,25 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ----------------- SIDEBAR -----------------
-with st.sidebar:
-    st.markdown("""
-    <div style="text-align: center; padding: 1rem;">
-        <h2 style="color: #06b6d4; margin: 0;">⚙️</h2>
-        <h3 style="color: white; margin: 0.5rem 0;">System Settings</h3>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    st.markdown("---")
-    
-    st.markdown('<p style="color: white; font-weight: bold; font-size: 1.1rem;">🎚️ Detection Sensitivity</p>', unsafe_allow_html=True)
-    sensitivity = st.slider("Anomaly Threshold Multiplier", 1.2, 2.0, 1.5, 0.1, label_visibility="collapsed")
-    st.markdown(f'<p style="color: #06b6d4; text-align: center;">Threshold: <b>{sensitivity}x</b> baseline</p>', unsafe_allow_html=True)
-    
-    st.markdown("---")
-    
-    st.markdown("""
-    <div style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(59, 130, 246, 0.2)); 
-                padding: 1.5rem; border-radius: 10px; border: 2px solid rgba(6, 182, 212, 0.4);">
-        <h4 style="color: #06b6d4; margin-top: 0; text-align: center;">💡 Your Role</h4>
-        <p style="color: white; text-align: center; font-weight: bold; margin: 0;">
-            Agentic AI Workflow Lead
-        </p>
-        <p style="color: #94a3b8; text-align: center; font-size: 0.9rem; margin-top: 0.5rem;">
-            System architecture, agent design, workflow logic, and responsible AI implementation
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    st.markdown("---")
-    
-    st.markdown("""
-    <div style="background: rgba(16, 185, 129, 0.1); padding: 1rem; border-radius: 8px; border-left: 4px solid #10b981;">
-        <p style="color: #10b981; font-weight: bold; margin: 0;">✅ System Status</p>
-        <p style="color: white; font-size: 0.9rem; margin-top: 0.5rem;">All agents operational</p>
-    </div>
-    """, unsafe_allow_html=True)
-
 # ----------------- INPUT SECTION -----------------
 st.markdown("### 📥 Water Usage Data Input")
+st.markdown('<p style="color: #94a3b8; font-size: 1rem;">Enter daily water consumption for the week (in liters)</p>', unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns([1, 1, 1])
 
 with col1:
-    st.markdown("#### Early Week")
+    st.markdown('<h4 style="color: #06b6d4;">📅 Early Week</h4>', unsafe_allow_html=True)
     mon = st.number_input("🔵 Monday (Liters)", min_value=0, max_value=10000, value=300, step=10)
     tue = st.number_input("🔵 Tuesday (Liters)", min_value=0, max_value=10000, value=310, step=10)
 
 with col2:
-    st.markdown("#### Mid Week")
+    st.markdown('<h4 style="color: #10b981;">📅 Mid Week</h4>', unsafe_allow_html=True)
     wed = st.number_input("🟢 Wednesday (Liters)", min_value=0, max_value=10000, value=305, step=10)
     thu = st.number_input("🟡 Thursday (Liters)", min_value=0, max_value=10000, value=680, step=10)
 
 with col3:
-    st.markdown("#### Late Week")
+    st.markdown('<h4 style="color: #f59e0b;">📅 Late Week</h4>', unsafe_allow_html=True)
     fri = st.number_input("🔴 Friday (Liters)", min_value=0, max_value=10000, value=720, step=10)
     st.markdown("")
     st.markdown("")
